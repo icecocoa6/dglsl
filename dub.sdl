@@ -1,0 +1,10 @@
+name "dglsl"
+description "A GLSL bridge for D."
+copyright "Copyright © 2016, Taichi Tomioka"
+authors "Taichi Tomioka"
+license "MIT"
+
+targetName "D-GLSL"
+targetType "staticLibrary"
+
+dependency "gl3n" version="~>1.3.1"
