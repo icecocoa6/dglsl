@@ -4,28 +4,32 @@ module dglsl.translator;
 import std.range;
 
 import dglsl.type;
+import dglsl.sampler;
 
 enum input;
 enum output;
 enum uniform;
 enum ignore;
 
+class _Shader {
+    mixin TextureLookupFunctions;
+}
 
-
-class Shader(alias Type, string file = __FILE__, int line = __LINE__) {
-    @ignore static immutable glsl = "330";
-    @ignore static immutable filepath = file;
-    @ignore static immutable lineno = line;
+class Shader(alias Type, string file = __FILE__, int line = __LINE__) : _Shader {
+    static immutable glsl = "330";
+    static immutable filepath = file;
+    static immutable lineno = line;
     mixin Type;
 }
 
 mixin template Vertex() {
-	@ignore vec4 gl_Position;
+	vec4 gl_Position;
 }
 
 mixin template Fragment() {
 
 }
+
 
 string dtoglsl(Shader)() {
     import std.traits;

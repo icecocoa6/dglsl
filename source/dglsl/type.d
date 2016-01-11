@@ -1,20 +1,12 @@
 
 module dglsl.type;
 
+import std.traits;
+
 public import gl3n.linalg : Vector, Matrix;
 
-struct sampler2D {
-    // TODO:
-}
+import dglsl.sampler;
 
-vec4 texture(sampler2D sampler, vec2 p, float bias = 0) {
-    // TODO:
-    assert(false);
-}
-vec4 textureOffset(sampler2D sampler, vec2 p, ivec2 offset, float bias = 0) {
-    // TODO:
-    assert(false);
-}
 
 alias vec2  = Vector!(float, 2);
 alias ivec2 = Vector!(int,   2);
@@ -64,6 +56,42 @@ string glslType(T)() {
     else static if (is(T == mat4x2)) return "mat4x2";
     else static if (is(T == mat4x3)) return "mat4x3";
     else static if (is(T == mat4x4)) return "mat4x4";
+    else static if (is(T == sampler1D)) return "sampler1D";
+    else static if (is(T == sampler2D)) return "sampler2D";
+    else static if (is(T == sampler3D)) return "sampler3D";
+    else static if (is(T == samplerCube)) return "samplerCube";
+    else static if (is(T == sampler2DRect)) return "sampler2DRect";
+    else static if (is(T == sampler1DShadow)) return "sampler1DShadow";
+    else static if (is(T == sampler2DShadow)) return "sampler2DShadow";
+    else static if (is(T == samplerCubeShadow)) return "samplerCubeShadow";
+    else static if (is(T == sampler2DRectShadow)) return "sampler2DRectShadow";
+    else static if (is(T == sampler1DArray)) return "sampler1DArray";
+    else static if (is(T == sampler2DArray)) return "sampler2DArray";
+    else static if (is(T == sampler1DArrayShadow)) return "sampler1DArrayShadow";
+    else static if (is(T == sampler2DArrayShadow)) return "sampler2DArrayShadow";
+    else static if (is(T == samplerBuffer)) return "samplerBuffer";
+    else static if (is(T == sampler2DMS)) return "sampler2DMS";
+    else static if (is(T == sampler2DMSArray)) return "sampler2DMSArray";
+    else static if (is(T == isampler1D)) return "isampler1D";
+    else static if (is(T == isampler2D)) return "isampler2D";
+    else static if (is(T == isampler3D)) return "isampler3D";
+    else static if (is(T == isamplerCube)) return "isamplerCube";
+    else static if (is(T == isampler2DRect)) return "isampler2DRect";
+    else static if (is(T == isampler1DArray)) return "isampler1DArray";
+    else static if (is(T == isampler2DArray)) return "isampler2DArray";
+    else static if (is(T == isamplerBuffer)) return "isamplerBuffer";
+    else static if (is(T == isampler2DMS)) return "isampler2DMS";
+    else static if (is(T == isampler2DMSArray)) return "isampler2DMSArray";
+    else static if (is(T == usampler1D)) return "usampler1D";
+    else static if (is(T == usampler2D)) return "usampler2D";
+    else static if (is(T == usampler3D)) return "usampler3D";
+    else static if (is(T == usamplerCube)) return "usamplerCube";
+    else static if (is(T == usampler2DRect)) return "usampler2DRect";
+    else static if (is(T == usampler1DArray)) return "usampler1DArray";
+    else static if (is(T == usampler2DArray)) return "usampler2DArray";
+    else static if (is(T == usamplerBuffer)) return "usamplerBuffer";
+    else static if (is(T == usampler2DMS)) return "usampler2DMS";
+    else static if (is(T == usampler2DMSArray)) return "usampler2DMSArray";
     else return T.stringof;
 }
 
