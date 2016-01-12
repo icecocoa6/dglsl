@@ -73,7 +73,7 @@ string dtoglsl(Shader)() {
                     level--;
                     if (level < lvl) break;
                 }
-                result ~= source.front.strip;
+                result ~= source.front;
                 source.popFront();
             }
             
