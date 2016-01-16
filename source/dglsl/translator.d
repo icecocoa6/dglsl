@@ -30,13 +30,6 @@ string dtoglsl(Shader)() {
         auto o = getUDAs!(Shader._output, layout)[0];
         result ~= "layout(%s, max_vertices = %d) out;\n".format(o.qualifier, o.maxVertices.value);
 
-        alias gl_in = typeof(Shader.gl_in[0]);
-        result ~= "in " ~ gl_in.stringof ~ " {\n";
-        foreach (immutable s; __traits(derivedMembers, gl_in)) {
-            result ~= "\t%s %s;\n".format(glslType!(typeof(__traits(getMember, gl_in, s))), s);
-        }
-        result ~= "};\n";
-
         foreach (immutable s; __traits(derivedMembers, Shader)) {
             static if (s != typeof(Shader.gl_in[0]).stringof && !hasUDA!(__traits(getMember, Shader, s), ignore)) {
                 alias t = typeof(__traits(getMember, Shader, s));
@@ -79,12 +72,16 @@ string dtoglsl(Shader)() {
         }
     }
 
+    import std.ascii;
     auto source = import(Shader.filepath).lineSplitter.drop(Shader.lineno - 1);
     int level = 0;
     while (!source.empty && level >= 0) {
         string line = source.front;
 
-        if (functions.any!(s => line.canFind(s))) {
+        if (functions.any!((s) {
+                auto r = line.findSplit(s);
+                return !r[1].empty && !isAlphaNum(r[0][$ - 1]) && !isAlphaNum(r[2][0]);
+            })) {
             int lvl = level;
             while (!source.empty) {
                 if (source.front.canFind('{')) level++;
