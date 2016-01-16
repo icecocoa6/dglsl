@@ -2,66 +2,13 @@
 module dglsl.translator;
 
 import std.range;
+import std.string;
+
 
 import dglsl.type;
 import dglsl.sampler;
+import dglsl.shader;
 
-enum input;
-enum output;
-enum uniform;
-enum ignore;
-
-private struct MaxVertices {
-    int value;
-}
-struct layout {
-    string qualifier;
-    MaxVertices maxVertices;
-}
-@property auto max_vertices(int i) { return MaxVertices(i); }
-
-class _Shader {
-    mixin TextureLookupFunctions;
-}
-
-class Shader(alias Type, string file = __FILE__, int line = __LINE__) : _Shader {
-    static immutable glsl = "330";
-    static immutable filepath = file;
-    static immutable lineno = line;
-    mixin Type;
-}
-
-mixin template Vertex() {
-    static immutable type = "vertex";
-    vec4 gl_Position;
-}
-
-mixin template Fragment() {
-    static immutable type = "fragment";
-}
-
-mixin template Geometry() {
-    static immutable type = "geometry";
-    void EmitVertex() {};
-    void EndPrimitive() {};
-
-    struct PerVertex {
-        vec4 gl_Position;
-    }
-    PerVertex[] gl_in;
-
-    struct of {}
-
-    enum {
-        points = "points",
-        lines = "lines",
-        lines_adjacency = "lines_adjacency",
-        triangles = "triangles",
-        triangles_adjacency = "triangles_adjacency",
-        triangle_strip = "triangle_strip",
-        line_strip = "line_strip"
-    }
-}
 
 
 
