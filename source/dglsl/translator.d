@@ -25,10 +25,10 @@ string dtoglsl(Shader)() {
         static assert(__traits(hasMember, Shader, "_output"));
         static assert(__traits(hasMember, Shader, "gl_in"));
 
-        auto input = getUDAs!(Shader._input, layout)[0];
-        result ~= "layout(%s) in;\n".format(input.qualifier);
-        auto o = getUDAs!(Shader._output, layout)[0];
-        result ~= "layout(%s, max_vertices = %d) out;\n".format(o.qualifier, o.maxVertices.value);
+        auto input = getUDAs!(Shader._input, Layout)[0];
+        result ~= input.glsl ~ " in;\n";
+        auto o = getUDAs!(Shader._output, Layout)[0];
+        result ~= o.glsl ~ " out;\n";
 
         foreach (immutable s; __traits(derivedMembers, Shader)) {
             static if (s != typeof(Shader.gl_in[0]).stringof && !hasUDA!(__traits(getMember, Shader, s), ignore)) {
@@ -55,6 +55,10 @@ string dtoglsl(Shader)() {
                     functions ~= s;
                 } else {
                     static if (hasUDA!(__traits(getMember, Shader, s), input)) {
+                        static if (Shader.type == "vertex" && hasUDA!(__traits(getMember, Shader, s), Layout)) {
+                            auto l = getUDAs!(__traits(getMember, Shader, s), Layout)[0];
+                            result ~= l.glsl ~ " ";
+                        }
                         result ~= "in ";
                     }
 

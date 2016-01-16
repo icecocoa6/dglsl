@@ -22,13 +22,42 @@ enum uniform;
 enum ignore;
 
 private struct MaxVertices {
-    int value;
+    int value = -1;
 }
-struct layout {
+private struct Location {
+    int value = -1;
+}
+struct Layout {
     string qualifier;
     MaxVertices maxVertices;
+    Location location;
+
+    string glsl() {
+        import std.conv;
+        import std.array;
+        string[] lst;
+        if (!qualifier.empty) lst ~= qualifier;
+        if (maxVertices != MaxVertices.init) lst ~= "max_vertices = " ~ maxVertices.value.to!string;
+        if (location != Location.init) lst ~= "location = " ~ location.value.to!string;
+        return "layout(" ~ lst.join(", ") ~ ")";
+    }
+}
+
+string layout_attributes(T...)() {
+    string[] lst;
+    foreach (int i, immutable s; T) {
+        static if (is(s == string)) lst ~= "qualifier: args[%d]".format(i);
+        else static if (is(s == MaxVertices)) lst ~= "maxVertices: args[%d]".format(i);
+        else static if (is(s == Location)) lst ~= "location: args[%d]".format(i);
+    }
+    return lst.join(",");
+}
+auto layout(T...)(T args) {
+    mixin("Layout l = {" ~ layout_attributes!T ~ "};");
+    return l;
 }
 @property auto max_vertices(int i) { return MaxVertices(i); }
+@property auto location(int i) { return Location(i); }
 
 
 class Shader(alias Type, string file = __FILE__, int line = __LINE__) : ShaderBase {
