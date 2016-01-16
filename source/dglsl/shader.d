@@ -9,7 +9,7 @@ import dglsl.type;
 import dglsl.sampler;
 import dglsl.translator;
 
-class _Shader {
+class ShaderBase {
     mixin TextureLookupFunctions;
 
     private GLuint _shaderid;
@@ -31,7 +31,7 @@ struct layout {
 @property auto max_vertices(int i) { return MaxVertices(i); }
 
 
-class Shader(alias Type, string file = __FILE__, int line = __LINE__) : _Shader {
+class Shader(alias Type, string file = __FILE__, int line = __LINE__) : ShaderBase {
     static immutable glsl = "330";
     static immutable filepath = file;
     static immutable lineno = line;
@@ -40,7 +40,7 @@ class Shader(alias Type, string file = __FILE__, int line = __LINE__) : _Shader 
 
 mixin template Vertex() {
     static immutable type = "vertex";
-	vec4 gl_Position;
+    vec4 gl_Position;
 }
 
 mixin template Fragment() {
@@ -77,7 +77,7 @@ mixin template Geometry() {
 }
 
 
-void compile(T : _Shader)(T shader) {
+void compile(T : ShaderBase)(T shader) {
     static if (T.type == "vertex")
         GLuint id = glCreateShader(GL_VERTEX_SHADER);
     static if (T.type == "fragment")
@@ -101,7 +101,7 @@ void compile(T : _Shader)(T shader) {
 ** プログラムの情報を表示する
 ** ref: http://marina.sys.wakayama-u.ac.jp/~tokoi/?date=20090827
 */
-string infoLog(T : _Shader)(T shader) {
+string infoLog(T : ShaderBase)(T shader) {
     GLsizei bufSize;
 
     /* シェーダのコンパイル時のログの長さを取得する */
