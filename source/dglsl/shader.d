@@ -27,8 +27,11 @@ private struct MaxVertices {
 private struct Location {
     int value = -1;
 }
+private struct Primitive {
+    string value;
+}
 struct Layout {
-    string qualifier;
+    Primitive qualifier;
     MaxVertices maxVertices;
     Location location;
 
@@ -36,7 +39,7 @@ struct Layout {
         import std.conv;
         import std.array;
         string[] lst;
-        if (!qualifier.empty) lst ~= qualifier;
+        if (qualifier != Primitive.init) lst ~= qualifier.value;
         if (maxVertices != MaxVertices.init) lst ~= "max_vertices = " ~ maxVertices.value.to!string;
         if (location != Location.init) lst ~= "location = " ~ location.value.to!string;
         return "layout(" ~ lst.join(", ") ~ ")";
@@ -46,7 +49,7 @@ struct Layout {
 string layout_attributes(T...)() {
     string[] lst;
     foreach (int i, immutable s; T) {
-        static if (is(s == string)) lst ~= "qualifier: args[%d]".format(i);
+        static if (is(s == Primitive)) lst ~= "qualifier: args[%d]".format(i);
         else static if (is(s == MaxVertices)) lst ~= "maxVertices: args[%d]".format(i);
         else static if (is(s == Location)) lst ~= "location: args[%d]".format(i);
     }
@@ -95,13 +98,13 @@ mixin template Geometry() {
     struct of {}
 
     enum {
-        points = "points",
-        lines = "lines",
-        lines_adjacency = "lines_adjacency",
-        triangles = "triangles",
-        triangles_adjacency = "triangles_adjacency",
-        triangle_strip = "triangle_strip",
-        line_strip = "line_strip"
+        points = Primitive("points"),
+        lines = Primitive("lines"),
+        lines_adjacency = Primitive("lines_adjacency"),
+        triangles = Primitive("triangles"),
+        triangles_adjacency = Primitive("triangles_adjacency"),
+        triangle_strip = Primitive("triangle_strip"),
+        line_strip = Primitive("line_strip")
     }
 }
 
