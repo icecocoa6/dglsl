@@ -2,6 +2,7 @@
 module dglsl.shader;
 
 import std.string;
+import std.conv;
 
 import derelict.opengl3.gl3;
 
@@ -63,23 +64,26 @@ auto layout(T...)(T args) {
 @property auto location(int i) { return Location(i); }
 
 
-class Shader(alias Type, string file = __FILE__, int line = __LINE__) : ShaderBase {
-    static immutable glsl = "330";
+class Shader(alias Type, int _version = 330, string file = __FILE__, int line = __LINE__) : ShaderBase {
+    static immutable glslVersion = _version;
     static immutable filepath = file;
     static immutable lineno = line;
     mixin Type;
 }
 
 mixin template Vertex() {
+    static assert(glslVersion >= 330);
     static immutable type = "vertex";
     vec4 gl_Position;
 }
 
 mixin template Fragment() {
+    static assert(glslVersion >= 330);
     static immutable type = "fragment";
 }
 
 mixin template Geometry() {
+    static assert(glslVersion >= 330);
     static immutable type = "geometry";
     void EmitVertex() {};
     void EndPrimitive() {};
@@ -108,6 +112,21 @@ mixin template Geometry() {
     }
 }
 
+mixin template TessellationControl() {
+    static assert(glslVersion >= 400);
+    static immutable type = "tessellationControl";
+}
+
+mixin template TessellationEvaluation() {
+    static assert(glslVersion >= 400);
+    static immutable type = "tessellationEvaluation";
+}
+
+mixin template Compute() {
+    static assert(glslVersion >= 430);
+    static immutable type = "compute";
+}
+
 
 void compile(T : ShaderBase)(T shader) {
     static if (T.type == "vertex")
@@ -115,6 +134,12 @@ void compile(T : ShaderBase)(T shader) {
     static if (T.type == "fragment")
         GLuint id = glCreateShader(GL_FRAGMENT_SHADER);
     static if (T.type == "geometry")
+        GLuint id = glCreateShader(GL_GEOMETRY_SHADER);
+    static if (T.type == "tessellationControl")
+        GLuint id = glCreateShader(GL_GEOMETRY_SHADER);
+    static if (T.type == "tessellationEvaluation")
+        GLuint id = glCreateShader(GL_GEOMETRY_SHADER);
+    static if (T.type == "compute")
         GLuint id = glCreateShader(GL_GEOMETRY_SHADER);
 
     auto src = dtoglsl!(T).toStringz;
