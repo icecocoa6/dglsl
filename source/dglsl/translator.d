@@ -86,9 +86,9 @@ string dtoglsl(Shader)() if (Shader.type == "geometry") {
     string result = "#version %s\n".format(Shader.glslVersion);
     string[] functions;
 
-    static assert(__traits(hasMember, Shader, "_input"));
-    static assert(__traits(hasMember, Shader, "_output"));
-    static assert(__traits(hasMember, Shader, "gl_in"));
+    static assert(__traits(hasMember, Shader, "_input"), "Geometry shaders need an '_input' member!");
+    static assert(__traits(hasMember, Shader, "_output"), "Geometry shaders need an '_output' member!");
+    static assert(__traits(hasMember, Shader, "gl_in"), "Geometry shaders need an 'gl_in' member!");
 
     auto input = getUDAs!(Shader._input, Layout)[0];
     result ~= input.glsl ~ " in;\n";

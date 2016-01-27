@@ -72,18 +72,18 @@ class Shader(alias Type, int _version = 330, string file = __FILE__, int line = 
 }
 
 mixin template Vertex() {
-    static assert(glslVersion >= 330);
+    static assert(glslVersion >= 330, "You need at least GLSL version 330 for vertex shaders!");
     static immutable type = "vertex";
     vec4 gl_Position;
 }
 
 mixin template Fragment() {
-    static assert(glslVersion >= 330);
+    static assert(glslVersion >= 330, "You need at least GLSL version 330 for fragment shaders!");
     static immutable type = "fragment";
 }
 
 mixin template Geometry() {
-    static assert(glslVersion >= 330);
+    static assert(glslVersion >= 330, "You need at least GLSL version 330 for geometry shaders!");
     static immutable type = "geometry";
     void EmitVertex() {};
     void EndPrimitive() {};
@@ -113,17 +113,17 @@ mixin template Geometry() {
 }
 
 mixin template TessellationControl() {
-    static assert(glslVersion >= 400);
+    static assert(glslVersion >= 400, "You need at least GLSL version 400 for tessellation control shaders!");
     static immutable type = "tessellationControl";
 }
 
 mixin template TessellationEvaluation() {
-    static assert(glslVersion >= 400);
+    static assert(glslVersion >= 400, "You need at least GLSL version 400 for tessellation evaluation shaders!");
     static immutable type = "tessellationEvaluation";
 }
 
 mixin template Compute() {
-    static assert(glslVersion >= 430);
+    static assert(glslVersion >= 430, "You need at least GLSL version 430 for compute shaders!");
     static immutable type = "compute";
 }
 
