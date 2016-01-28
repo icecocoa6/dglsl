@@ -47,7 +47,7 @@ class FragShader : Shader!Fragment {
   @output vec3 fragColor;
   
   void main() {
-    fragColor = vec3(vectColor);
+    fragColor = vec3(vertColor);
   }
 }
 ```
