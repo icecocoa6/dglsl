@@ -13,7 +13,7 @@ import dglsl.translator;
 class ShaderBase {
     mixin TextureLookupFunctions;
 
-    private GLuint _shaderid;
+    protected GLuint _shaderid;
     @property auto id() const { return _shaderid; }
 }
 
